@@ -1,6 +1,7 @@
 project(beta VERSION "${CMAKE_PROJECT_VERSION}")
 
 set(${PROJECT_NAME}_HEADERS
+    Foo.h
     multiply.h
 )
 
