@@ -9,11 +9,10 @@ set(${PROJECT_NAME}_SOURCES
 
 # Should not have to be listed, but at this point
 # alpha package does not find its own dependencies
-find_package(beta REQUIRED)
+find_package(MyRepository REQUIRED COMPONENTS beta)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
-find_package(alpha REQUIRED)
-
+find_package(MyRepository REQUIRED COMPONENTS alpha)
 
 add_executable(${PROJECT_NAME}
                ${${PROJECT_NAME}_HEADERS}
