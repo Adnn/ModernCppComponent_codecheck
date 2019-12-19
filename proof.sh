@@ -27,7 +27,34 @@ mkdir -p ${WORKDIR}
 rm -r ${WORKDIR}
 mkdir -p ${WORKDIR}
 
-pushd build
-cmake .. -C ../64bit.cmake -DBUILD_tests=ON -DBoost_ROOT=${BOOST_ROOT}
+pushd ${WORKDIR}
+BUILD_DIR=$(pwd)
+cmake .. -C ../64bit.cmake -DBUILD_tests=ON -DCMAKE_INSTALL_PREFIX=${BUILD_DIR}/SDK/myrepository -DBoost_ROOT=${BOOST_ROOT}
+cmake --build . --config Release --target install
+popd
+
+##
+## Build a downstream consumer, mocking-up a separate repository
+##
+
+# From build tree
+WORKDIR=build-downstream
+mkdir -p ${WORKDIR}
+rm -r ${WORKDIR}
+mkdir -p ${WORKDIR}
+
+pushd ${WORKDIR}
+cmake ../downstream -C ../64bit.cmake -DCMAKE_PREFIX_PATH=${BUILD_DIR} -DBoost_ROOT=${BOOST_ROOT}
+cmake --build . --config Release
+popd
+
+# From install tree
+WORKDIR=build-downstream-install
+mkdir -p ${WORKDIR}
+rm -r ${WORKDIR}
+mkdir -p ${WORKDIR}
+
+pushd ${WORKDIR}
+cmake ../downstream -C ../64bit.cmake -DCMAKE_PREFIX_PATH=${BUILD_DIR}/SDK/myrepository -DBoost_ROOT=${BOOST_ROOT}
 cmake --build . --config Release
 popd
