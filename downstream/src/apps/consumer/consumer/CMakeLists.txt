@@ -7,11 +7,6 @@ set(${PROJECT_NAME}_SOURCES
     main.cpp
 )
 
-# Should not have to be listed, but at this point
-# alpha package does not find its own dependencies
-find_package(MyRepository REQUIRED COMPONENTS beta)
-find_package(Boost REQUIRED COMPONENTS filesystem)
-
 find_package(MyRepository REQUIRED COMPONENTS alpha)
 
 add_executable(${PROJECT_NAME}
