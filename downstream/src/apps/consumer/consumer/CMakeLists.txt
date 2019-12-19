@@ -9,11 +9,10 @@ set(${PROJECT_NAME}_SOURCES
 
 # Should not have to be listed, but at this point
 # A package does not find its own dependencies
-find_package(B REQUIRED)
+find_package(MyRepository REQUIRED COMPONENTS B)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
-find_package(A REQUIRED)
-
+find_package(MyRepository REQUIRED COMPONENTS A)
 
 add_executable(${PROJECT_NAME}
                ${${PROJECT_NAME}_HEADERS}
