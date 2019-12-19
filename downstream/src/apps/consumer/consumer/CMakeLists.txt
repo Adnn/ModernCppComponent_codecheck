@@ -7,14 +7,6 @@ set(${PROJECT_NAME}_SOURCES
     main.cpp
 )
 
-# Should not have to be listed, but at this point
-# alpha package does not find its own dependencies
-if (CMAKE_SYSTEM_NAME MATCHES Windows)
-    set(Boost_USE_STATIC_LIBS ON)
-endif()
-find_package(MyRepository REQUIRED COMPONENTS beta)
-find_package(Boost REQUIRED COMPONENTS filesystem)
-
 find_package(MyRepository REQUIRED COMPONENTS alpha)
 
 add_executable(${PROJECT_NAME}

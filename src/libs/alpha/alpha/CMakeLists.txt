@@ -12,11 +12,22 @@ set(${PROJECT_NAME}_SOURCES
     sum.cpp
 )
 
-# Hack: hardcode a value to find Boost on Windows
-if (CMAKE_SYSTEM_NAME MATCHES Windows)
-    set(Boost_USE_STATIC_LIBS ON)
-endif()
-find_package(Boost REQUIRED COMPONENTS filesystem)
+function(local_find)
+    set(REQUIRED "REQUIRED")
+    set(QUIET "QUIET")
+    set(find_package "find_package")
+    set(find_internal_package "#Internal component: find_package")
+    configure_file(CMakeFinds.cmake.in CMakeFinds.cmake @ONLY)
+    include(${CMAKE_CURRENT_BINARY_DIR}/CMakeFinds.cmake)
+endfunction()
+local_find()
+
+function(config_find)
+    set(find_package "find_dependency")
+    set(find_internal_package "find_dependency")
+    configure_file(CMakeFinds.cmake.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}FindUpstream.cmake @ONLY)
+endfunction()
+config_find()
 
 # Creates the library target
 add_library(${PROJECT_NAME}
@@ -62,4 +73,5 @@ install(EXPORT ${PROJECT_NAME}Targets
         DESTINATION lib/cmake/${CMAKE_PROJECT_NAME}/${PROJECT_NAME}
         NAMESPACE myrepo::)
 install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}FindUpstream.cmake
         DESTINATION lib/cmake/${CMAKE_PROJECT_NAME}/${PROJECT_NAME})

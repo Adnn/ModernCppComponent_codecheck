@@ -1,1 +1,4 @@
+include(CMakeFindDependencyMacro) # Provides find_dependency() macro
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@FindUpstream.cmake" OPTIONAL)
+
 include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
