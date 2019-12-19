@@ -50,24 +50,16 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 
 # build tree
 export(EXPORT ${PROJECT_NAME}Targets
-       FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
+       FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Targets.cmake
        NAMESPACE myrepo::)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/PackageConfig.cmake.in
-               ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+               ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake
                @ONLY)
-if(PROJECT_VERSION)
-    include(CMakePackageConfigHelpers)
-    set(_version_file ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake)
-    write_basic_package_version_file(${_version_file}
-        VERSION ${PROJECT_VERSION}
-        COMPATIBILITY AnyNewerVersion)
-endif()
 
 # install tree
 install(EXPORT ${PROJECT_NAME}Targets
         FILE ${PROJECT_NAME}Targets.cmake
-        DESTINATION lib/cmake/${PROJECT_NAME}
+        DESTINATION lib/cmake/${CMAKE_PROJECT_NAME}/${PROJECT_NAME}
         NAMESPACE myrepo::)
-install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-              ${_version_file}
-        DESTINATION lib/cmake/${PROJECT_NAME})
+install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}Config.cmake
+        DESTINATION lib/cmake/${CMAKE_PROJECT_NAME}/${PROJECT_NAME})
