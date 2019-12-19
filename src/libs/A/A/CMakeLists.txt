@@ -12,7 +12,30 @@ set(${PROJECT_NAME}_SOURCES
     sum.cpp
 )
 
-find_package(Boost REQUIRED COMPONENTS filesystem)
+function(local_find)
+    set (REQUIRED "REQUIRED")
+    set (QUIET "QUIET")
+    set (find_package "find_package")
+    configure_file(CMakeFinds.cmake.in CMakeFinds.cmake @ONLY)
+    include(${CMAKE_CURRENT_BINARY_DIR}/CMakeFinds.cmake)
+endfunction()
+local_find()
+
+set(${PROJECT_NAME}_INTERNAL_INTERFACE_DEPENDENCIES
+    B)
+
+function(config_find)
+    set (find_package "find_dependency")
+    configure_file(CMakeFinds.cmake.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}FindUpstream.cmake @ONLY)
+
+    list(JOIN ${PROJECT_NAME}_INTERNAL_INTERFACE_DEPENDENCIES " " _joined_components)
+    set(FIND_INTERNAL_COMPONENTS
+        "find_dependency(${CMAKE_PROJECT_NAME} CONFIG COMPONENTS ${_joined_components})")
+    configure_file(${CMAKE_SOURCE_DIR}/cmake/PackageConfig.cmake.in
+                   ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+                   @ONLY)
+endfunction()
+config_find()
 
 # Creates the library target
 add_library(${PROJECT_NAME}
@@ -28,11 +51,12 @@ target_include_directories(${PROJECT_NAME}
     INTERFACE
         "$<INSTALL_INTERFACE:include/${PROJECT_NAME}>")
 
+list(TRANSFORM ${PROJECT_NAME}_INTERNAL_INTERFACE_DEPENDENCIES PREPEND myrepo::)
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         Boost::filesystem
     INTERFACE
-        myrepo::B)
+        ${${PROJECT_NAME}_INTERNAL_INTERFACE_DEPENDENCIES})
 
 # Defines target properties
 set_target_properties(${PROJECT_NAME}
@@ -47,9 +71,6 @@ install(FILES ${${PROJECT_NAME}_HEADERS}
 export(EXPORT ${PROJECT_NAME}Targets
        FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Targets.cmake
        NAMESPACE myrepo::)
-configure_file(${CMAKE_SOURCE_DIR}/cmake/PackageConfig.cmake.in
-               ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-               @ONLY)
 
 # install tree
 install(EXPORT ${PROJECT_NAME}Targets
@@ -57,4 +78,5 @@ install(EXPORT ${PROJECT_NAME}Targets
         DESTINATION lib/cmake/${CMAKE_PROJECT_NAME}
         NAMESPACE myrepo::)
 install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_BINARY_DIR}/${PROJECT_NAME}FindUpstream.cmake
         DESTINATION lib/cmake/${CMAKE_PROJECT_NAME})
