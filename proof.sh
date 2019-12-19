@@ -28,7 +28,7 @@ rm -r ${WORKDIR}
 mkdir -p ${WORKDIR}
 
 pushd ${WORKDIR}
-cmake ../downstream -DA_DIR=${BUILD_DIR} -DB_DIR=${BUILD_DIR} $@
+cmake ../downstream -DCMAKE_PREFIX_PATH=${BUILD_DIR} $@
 cmake --build .
 popd
 
@@ -39,6 +39,6 @@ rm -r ${WORKDIR}
 mkdir -p ${WORKDIR}
 
 pushd ${WORKDIR}
-cmake ../downstream -DA_DIR=${BUILD_DIR}/SDK/myrepository/lib/cmake/A -DB_DIR=${BUILD_DIR}/SDK/myrepository/lib/cmake/B $@
+cmake ../downstream -DCMAKE_PREFIX_PATH=${BUILD_DIR}/SDK/myrepository $@
 cmake --build .
 popd
